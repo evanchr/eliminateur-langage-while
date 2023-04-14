@@ -53,8 +53,31 @@ object While1cons {
    * @return une paire constituée d'une liste d'affectations ayant le même effet
    * que l'expression et une expression qui contient le résultat
    */
-  // TODO TP4
-  def while1ConsExprV(expression: Expression): (List[Command], Variable) = ???
+  def while1ConsExprV(expression: Expression): (List[Command], Variable) = {
+    expression match {
+      case Nl => val nv = NewVar.make() ; (List(Set(nv, Nl)), nv)
+      case Cst(name) => val nv = NewVar.make() ; (List(Set(nv, Cst(name))), nv)
+      case VarExp(name) => (Nil, Var(name))
+      case Cons(arg1, arg2) => 
+        val (lcarg1,Var(nvarg1)) = while1ConsExprV(arg1)
+        val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2)
+        val nv = NewVar.make()
+        (lcarg1 ++ lcarg2 ++ List(Set(nv, Cons(VarExp(nvarg1),VarExp(nvarg2)))),nv)
+      case Hd(arg) => 
+        val (lcarg,Var(nvarg)) = while1ConsExprV(arg)
+        val nv = NewVar.make()
+        (lcarg ++ List(Set(nv,Hd(VarExp(nvarg)))), nv)
+      case Tl(arg) => 
+        val (lcarg,Var(nvarg)) = while1ConsExprV(arg)
+        val nv = NewVar.make()
+        (lcarg ++ List(Set(nv,Tl(VarExp(nvarg)))), nv)
+      case Eq(arg1, arg2) => 
+        val (lcarg1,Var(nvarg1)) = while1ConsExprV(arg1)
+        val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2)
+        val nv = NewVar.make()
+        (lcarg1 ++ lcarg2 ++ List(Set(nv, Eq(VarExp(nvarg1),VarExp(nvarg2)))),nv)
+    }
+  }
 
   /**
    * @param expression : un AST décrivant une expression du langage WHILE
