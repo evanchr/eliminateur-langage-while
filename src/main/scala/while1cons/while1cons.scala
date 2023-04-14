@@ -84,8 +84,27 @@ object While1cons {
    * @return une paire constituée d'une liste d'affectations ayant le même effet
    * que l'expression et la variable qui contient le résultat
    */
-  // TODO TP4
-  def while1ConsExprSE(expression: Expression): (List[Command], Expression) = ???
+  def while1ConsExprSE(expression: Expression): (List[Command], Expression) = {
+    expression match {
+      case Nl => (List(),Nl)
+      case Cst(name) => (List(),Cst(name))
+      case VarExp(name) => (List(),VarExp(name))
+      case Cons(arg1, arg2) => 
+        val (lcarg1,Var(nvarg1)) = while1ConsExprV(arg1)
+        val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2)
+        (lcarg1 ++ lcarg2, Cons(VarExp(nvarg1),VarExp(nvarg2)))
+      case Hd(arg) => 
+        val (lcarg,Var(nvarg)) = while1ConsExprV(arg)
+        (lcarg, Hd(VarExp(nvarg)))
+      case Tl(arg) => 
+        val (lcarg,Var(nvarg)) = while1ConsExprV(arg)
+        (lcarg, Tl(VarExp(nvarg)))
+      case Eq(arg1, arg2) => 
+        val (lcarg1,Var(nvarg1)) = while1ConsExprV(arg1)
+        val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2)
+        (lcarg1 ++ lcarg2, Eq(VarExp(nvarg1),VarExp(nvarg2)))
+    }
+  }
 
   /**
    *
