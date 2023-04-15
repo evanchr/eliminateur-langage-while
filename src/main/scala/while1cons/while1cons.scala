@@ -120,12 +120,8 @@ object While1cons {
     command match {
       case Nop => List(Nop)
       case Set(variable, expression) => 
-        while1ConsExprSE(expression) match {
-          case (Nil,Nl) => List(Set(variable,expression))
-          case (Nil,Cst(name)) => List(Set(variable,expression))
-          case (Nil,VarExp(name)) => List(Set(variable,expression))
-          case (lcarg,expr) => lcarg ++ List(Set(variable,expr))
-        }
+        val (lcarg,expr) = while1ConsExprSE(expression)
+        lcarg ++ List(Set(variable,expr))
       case While(condition, body) => ???
       case For(count, body) => ???
       case If(condition, then_commands, else_commands) => ???
