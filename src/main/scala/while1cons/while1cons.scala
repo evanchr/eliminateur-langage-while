@@ -134,7 +134,13 @@ object While1cons {
    * et ayant le même effet que la commande
    */
   // TODO TP4
-  def while1ConsCommands(commands: List[Command]): List[Command] = ???
+  def while1ConsCommands(commands: List[Command]): List[Command] = {
+    commands match {
+      case Nil => ???
+      case head :: Nil => ???
+      case head :: next => ???
+    }
+  }
 
   /**
    *
