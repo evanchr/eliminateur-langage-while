@@ -133,12 +133,11 @@ object While1cons {
    * @return une liste de commandes ayant un seul construteur par expression
    * et ayant le même effet que la commande
    */
-  // TODO TP4
   def while1ConsCommands(commands: List[Command]): List[Command] = {
     commands match {
-      case Nil => ???
-      case head :: Nil => ???
-      case head :: next => ???
+      case Nil => throw ExceptionListeVide
+      case head :: Nil => while1ConsCommand(head)
+      case head :: next => while1ConsCommand(head) ++ while1ConsCommands(next)
     }
   }
 
