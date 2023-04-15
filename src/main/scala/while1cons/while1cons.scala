@@ -116,7 +116,15 @@ object While1cons {
    * et ayant le même effet que la commande
    */
   // TODO TP4
-  def while1ConsCommand(command: Command): List[Command] = ???
+  def while1ConsCommand(command: Command): List[Command] = {
+    command match {
+      case Nop => ???
+      case Set(variable, expression) => ???
+      case While(condition, body) => ???
+      case For(count, body) => ???
+      case If(condition, then_commands, else_commands) => ???
+    }
+  }
 
   /**
    * @param commands : une liste d'AST décrivant une liste de commandes du langage WHILE
