@@ -118,8 +118,14 @@ object While1cons {
   // TODO TP4
   def while1ConsCommand(command: Command): List[Command] = {
     command match {
-      case Nop => ???
-      case Set(variable, expression) => ???
+      case Nop => List(Nop)
+      case Set(variable, expression) => 
+        while1ConsExprSE(expression) match {
+          case (Nil,Nl) => List(Set(variable,expression))
+          case (Nil,Cst(name)) => List(Set(variable,expression))
+          case (Nil,VarExp(name)) => List(Set(variable,expression))
+          case (lcarg,expr) => lcarg ++ List(Set(variable,expr))
+        }
       case While(condition, body) => ???
       case For(count, body) => ???
       case If(condition, then_commands, else_commands) => ???
