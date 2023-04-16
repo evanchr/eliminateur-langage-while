@@ -122,7 +122,12 @@ object While1cons {
       case Set(variable, expression) => 
         val (lcarg,expr) = while1ConsExprSE(expression)
         lcarg ++ List(Set(variable,expr))
-      case While(condition, body) => ???
+      case While(condition, body) => // XXX à optimiser 
+        val (lcarg,expr) = while1ConsExprSE(condition)
+        val (lcarg_2,expr_2) = while1ConsExprV(expr)
+        val list_com = while1ConsCommands(body) ++ lcarg ++ lcarg_2
+        val vari = expr_2 match {case Var(name) => Var(name)}
+        lcarg ++ lcarg_2 ++ List(While(VarExp(vari.name),list_com))
       case For(count, body) => ???
       case If(condition, then_commands, else_commands) => ???
     }
@@ -157,6 +162,7 @@ object While1cons {
   def main(args: Array[String]): Unit = {
 
     // vous pouvez ici tester manuellement vos fonctions par des print
+    println(while1ConsExprSE(Eq(VarExp("X"), Tl(VarExp("Y")))))
 
   }
 }
