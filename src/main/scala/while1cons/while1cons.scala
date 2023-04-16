@@ -128,7 +128,12 @@ object While1cons {
         val list_com = while1ConsCommands(body) ++ lcarg ++ lcarg_2
         val vari = expr_2 match {case Var(name) => Var(name)}
         lcarg ++ lcarg_2 ++ List(While(VarExp(vari.name),list_com))
-      case For(count, body) => ???
+      case For(count, body) => 
+        val (lcarg,expr) = while1ConsExprSE(count)
+        val (lcarg_2,expr_2) = while1ConsExprV(expr)
+        val list_com = while1ConsCommands(body)
+        val vari = expr_2 match {case Var(name) => Var(name)}
+        lcarg ++ lcarg_2 ++ List(For(VarExp(vari.name),list_com))
       case If(condition, then_commands, else_commands) => ???
     }
   }
