@@ -115,26 +115,32 @@ object While1cons {
    * @return une liste de commandes ayant un seul construteur par expression
    * et ayant le même effet que la commande
    */
-  // TODO TP4
   def while1ConsCommand(command: Command): List[Command] = {
     command match {
       case Nop => List(Nop)
       case Set(variable, expression) => 
         val (lcarg,expr) = while1ConsExprSE(expression)
         lcarg ++ List(Set(variable,expr))
-      case While(condition, body) => // XXX à optimiser 
+      case While(condition, body) => 
+        // XXX à optimiser ?
         val (lcarg,expr) = while1ConsExprSE(condition)
         val (lcarg_2,expr_2) = while1ConsExprV(expr)
         val list_com = while1ConsCommands(body) ++ lcarg ++ lcarg_2
         val vari = expr_2 match {case Var(name) => Var(name)}
         lcarg ++ lcarg_2 ++ List(While(VarExp(vari.name),list_com))
       case For(count, body) => 
+        // XXX à optimiser ?
         val (lcarg,expr) = while1ConsExprSE(count)
         val (lcarg_2,expr_2) = while1ConsExprV(expr)
         val list_com = while1ConsCommands(body)
         val vari = expr_2 match {case Var(name) => Var(name)}
         lcarg ++ lcarg_2 ++ List(For(VarExp(vari.name),list_com))
-      case If(condition, then_commands, else_commands) => ???
+      case If(condition, then_commands, else_commands) => 
+        // XXX à optimiser ?
+        val (lcarg,expr) = while1ConsExprSE(condition)
+        val (lcarg_2,expr_2) = while1ConsExprV(expr)
+        val vari = expr_2 match {case Var(name) => Var(name)}
+        lcarg ++ lcarg_2 ++ List(If(VarExp(vari.name), while1ConsCommands(then_commands), while1ConsCommands(else_commands)))
     }
   }
 
@@ -167,7 +173,7 @@ object While1cons {
   def main(args: Array[String]): Unit = {
 
     // vous pouvez ici tester manuellement vos fonctions par des print
-    println(while1ConsExprSE(Eq(VarExp("X"), Tl(VarExp("Y")))))
+    println(while1ConsExprSE(Cons(Nl, Cons(Nl, Cons(Nl, Nl)))))
 
   }
 }
