@@ -167,10 +167,9 @@ object While1cons {
    * @param is : une liste de spécifications d'indentation
    * @return une liste de chaînes représentant la syntaxe concrète du programme
    */
-  // TODO TP4
   def while1ConsProgr(program: Program): Program = {
     program match {
-      case Progr(in, body, out) => ???
+      case Progr(in, body, out) => Progr(in, while1ConsCommands(body), out)
     }
   }
 
