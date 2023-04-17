@@ -168,7 +168,11 @@ object While1cons {
    * @return une liste de chaînes représentant la syntaxe concrète du programme
    */
   // TODO TP4
-  def while1ConsProgr(program: Program): Program = ???
+  def while1ConsProgr(program: Program): Program = {
+    program match {
+      case Progr(in, body, out) => ???
+    }
+  }
 
   def main(args: Array[String]): Unit = {
 
