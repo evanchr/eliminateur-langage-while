@@ -63,23 +63,23 @@ object While1cons {
         val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2) // Appel récursif sur le deuxième élément pour la même raison
         val nv = NewVar.make() // Création d'une variable temporaire
         (lcarg1 ++ lcarg2 ++ List(Set(nv, Cons(VarExp(nvarg1),VarExp(nvarg2)))),nv) 
-        // On concatène la liste de commande de arg1, celle de arg2 et celle du Cons qu'on appelle avec les variables temporaires
+        // On concatène la liste de commandes de arg1, celle de arg2 et celle du Cons qu'on appelle avec les variables temporaires
       case Hd(arg) => 
         val (lcarg,Var(nvarg)) = while1ConsExprV(arg) // Appel récursif sur l'argument car il peut s'agir d'une liste d'expressions complexes
         val nv = NewVar.make() // Création d'une variable temporaire
         (lcarg ++ List(Set(nv,Hd(VarExp(nvarg)))), nv) 
-        // On concatène la liste de commande de l'argument et celle de Hd qu'on appelle avec la variable temporaire de son argument
+        // On concatène la liste de commandes de l'argument et celle de Hd qu'on appelle avec la variable temporaire de son argument
       case Tl(arg) => 
         val (lcarg,Var(nvarg)) = while1ConsExprV(arg) // Appel récursif sur l'argument car il peut s'agir d'une liste d'expressions complexes
         val nv = NewVar.make() // Création d'une variable temporaire
         (lcarg ++ List(Set(nv,Tl(VarExp(nvarg)))), nv)
-        // On concatène la liste de commande de l'argument et celle de Tl qu'on appelle avec la variable temporaire de son argument
+        // On concatène la liste de commandes de l'argument et celle de Tl qu'on appelle avec la variable temporaire de son argument
       case Eq(arg1, arg2) => 
         val (lcarg1,Var(nvarg1)) = while1ConsExprV(arg1) // Appel récursif sur le premier argument car il peut s'agir d'une liste d'expressions complexes
         val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2) // Appel récursif sur le deuxième élément pour la même raison
         val nv = NewVar.make() // Création d'une variable temporaire
         (lcarg1 ++ lcarg2 ++ List(Set(nv, Eq(VarExp(nvarg1),VarExp(nvarg2)))),nv)
-        // On concatène la liste de commande de arg1, celle de arg2 et celle du Cons qu'on appelle avec les variables temporaires
+        // On concatène la liste de commandes de arg1, celle de arg2 et celle du Cons qu'on appelle avec les variables temporaires
     }
   }
 
@@ -90,23 +90,27 @@ object While1cons {
    */
   def while1ConsExprSE(expression: Expression): (List[Command], Expression) = {
     expression match {
-      case Nl => (List(),Nl)
-      case Cst(name) => (List(),Cst(name))
-      case VarExp(name) => (List(),VarExp(name))
+      case Nl => (List(),Nl) // On renvoie aucune commande et l'expression Nil
+      case Cst(name) => (List(),Cst(name)) // On renvoie aucune commande et l'expression Cst(name)
+      case VarExp(name) => (List(),VarExp(name)) // On renvoie aucune commande et l'expression VarExp(name)
       case Cons(arg1, arg2) => 
-        val (lcarg1,Var(nvarg1)) = while1ConsExprV(arg1)
-        val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2)
+        val (lcarg1,Var(nvarg1)) = while1ConsExprV(arg1) // Appel récursif sur le premier argument car il peut s'agir d'une liste d'expressions complexes
+        val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2) // Appel récursif sur le deuxième élément pour la même raison
         (lcarg1 ++ lcarg2, Cons(VarExp(nvarg1),VarExp(nvarg2)))
+        // On concatène la liste de commandes de arg1 et celle de arg2, et on renvoie l'expression Cons avec les variables temporaires en arguments
       case Hd(arg) => 
-        val (lcarg,Var(nvarg)) = while1ConsExprV(arg)
+        val (lcarg,Var(nvarg)) = while1ConsExprV(arg) // Appel récursif sur l'argument car il peut s'agir d'une liste d'expressions complexes
         (lcarg, Hd(VarExp(nvarg)))
+        // On renvoie la liste de commandes de l'argument et l'expression Hd avec la variable temporaire en argument
       case Tl(arg) => 
-        val (lcarg,Var(nvarg)) = while1ConsExprV(arg)
+        val (lcarg,Var(nvarg)) = while1ConsExprV(arg) // Appel récursif sur l'argument car il peut s'agir d'une liste d'expressions complexes
         (lcarg, Tl(VarExp(nvarg)))
+        // On renvoie la liste de commandes de l'argument et l'expression Tl avec la variable temporaire en argument
       case Eq(arg1, arg2) => 
-        val (lcarg1,Var(nvarg1)) = while1ConsExprV(arg1)
-        val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2)
+        val (lcarg1,Var(nvarg1)) = while1ConsExprV(arg1) // Appel récursif sur le premier argument car il peut s'agir d'une liste d'expressions complexes
+        val (lcarg2,Var(nvarg2)) = while1ConsExprV(arg2) // Appel récursif sur le deuxième élément pour la même raison
         (lcarg1 ++ lcarg2, Eq(VarExp(nvarg1),VarExp(nvarg2)))
+        // On concatène la liste de commandes de arg1 et celle de arg2, et on renvoie l'expression Eq avec les variables temporaires en arguments
     }
   }
 
