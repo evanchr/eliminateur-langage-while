@@ -125,30 +125,31 @@ object While1cons {
    */
   def while1ConsCommand(command: Command): List[Command] = {
     command match {
-      case Nop => List(Nop)
+      case Nop => List(Nop) // On renvoie la même commande car on ne fait rien
       case Set(variable, expression) => 
-        val (lcarg,expr) = while1ConsExprSE(expression)
-        lcarg ++ List(Set(variable,expr))
+        val (lcarg,expr) = while1ConsExprSE(expression) // Appel récursif sur l'expression car il peut s'agir d'une liste d'expressions complexes
+        lcarg ++ List(Set(variable,expr)) // On concatène la liste des commandes obtenues avec l'expression et la commande Set
       case While(condition, body) => 
-        // XXX à optimiser ?
-        val (lcarg,expr) = while1ConsExprSE(condition)
-        val (lcarg_2,expr_2) = while1ConsExprV(expr)
-        val list_com = while1ConsCommands(body) ++ lcarg ++ lcarg_2
-        val vari = expr_2 match {case Var(name) => Var(name)}
+        val (lcarg,expr) = while1ConsExprSE(condition) // On simplifie la condition
+        val (lcarg_2,expr_2) = while1ConsExprV(expr) // On simplifie l'expression obtenues à l'appel précédent
+        val list_com = while1ConsCommands(body) ++ lcarg ++ lcarg_2 
+        // On concatène les commandes du corps de la boucle (qu'on simplifie) avec celles obtenues avec les appels précédents
+        val vari = expr_2 match {case Var(name) => Var(name)} 
         lcarg ++ lcarg_2 ++ List(While(VarExp(vari.name),list_com))
+        // On concatène toutes les commandes
       case For(count, body) => 
-        // XXX à optimiser ?
-        val (lcarg,expr) = while1ConsExprSE(count)
-        val (lcarg_2,expr_2) = while1ConsExprV(expr)
-        val list_com = while1ConsCommands(body)
+        val (lcarg,expr) = while1ConsExprSE(count) // On simplifie la condition du nombre de boucles
+        val (lcarg_2,expr_2) = while1ConsExprV(expr) // On simplifie l'expression obtenues à l'appel précédent
+        val list_com = while1ConsCommands(body) // On simplifie le corps de la boucle
         val vari = expr_2 match {case Var(name) => Var(name)}
         lcarg ++ lcarg_2 ++ List(For(VarExp(vari.name),list_com))
+        //  On concatène toutes les commandes
       case If(condition, then_commands, else_commands) => 
-        // XXX à optimiser ?
-        val (lcarg,expr) = while1ConsExprSE(condition)
-        val (lcarg_2,expr_2) = while1ConsExprV(expr)
+        val (lcarg,expr) = while1ConsExprSE(condition) // On simplifie la condition
+        val (lcarg_2,expr_2) = while1ConsExprV(expr) // On simplifie l'expression obtenues à l'appel précédent
         val vari = expr_2 match {case Var(name) => Var(name)}
         lcarg ++ lcarg_2 ++ List(If(VarExp(vari.name), while1ConsCommands(then_commands), while1ConsCommands(else_commands)))
+        // On concatène toutes les commandes et on simplifie les commandes faites lors du If et du Else
     }
   }
 
@@ -159,9 +160,10 @@ object While1cons {
    */
   def while1ConsCommands(commands: List[Command]): List[Command] = {
     commands match {
-      case Nil => throw ExceptionListeVide
-      case head :: Nil => while1ConsCommand(head)
-      case head :: next => while1ConsCommand(head) ++ while1ConsCommands(next)
+      case Nil => throw ExceptionListeVide // s'il n'y a pas de commandes on lance une exception
+      case head :: Nil => while1ConsCommand(head) // s'il ne reste plus qu'une commande, on la simplifie avec un appel à la méthode précédente
+      case head :: next => while1ConsCommand(head) ++ while1ConsCommands(next) 
+      // on concatène la première commande, qu'on simplifie avec la méthode précédente, avec la liste des commandes obtenues en faisant un appel récursif sur les commandes restantes 
     }
   }
 
@@ -177,7 +179,8 @@ object While1cons {
    */
   def while1ConsProgr(program: Program): Program = {
     program match {
-      case Progr(in, body, out) => Progr(in, while1ConsCommands(body), out)
+      case Progr(in, body, out) => Progr(in, while1ConsCommands(body), out) 
+      // On simplifie le corps du programme avec la méthode précédente car il peut s'agir de plusieurs commandes
     }
   }
 
